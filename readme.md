@@ -1,4 +1,4 @@
-##Synopsis
+
 SpringBoot utilizando JPA + Spring Security.
 
 Login + CRUD
