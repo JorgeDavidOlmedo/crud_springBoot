@@ -1,5 +1,5 @@
 
-SpringBoot utilizando JPA + Spring Security.
+SpringBoot utilizando JPA + Spring Security + Angular 1.
 
 Login + CRUD
 
