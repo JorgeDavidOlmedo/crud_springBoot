@@ -1,0 +1,13 @@
+/Users/jorgedavidolmedo/Documents/crud_springBoot/src/main/java/jorge/crud/services/UsuarioAuthService.java
+/Users/jorgedavidolmedo/Documents/crud_springBoot/src/main/java/jorge/crud/controllers/AdminController.java
+/Users/jorgedavidolmedo/Documents/crud_springBoot/src/main/java/jorge/crud/services/UsuarioService.java
+/Users/jorgedavidolmedo/Documents/crud_springBoot/src/main/java/jorge/crud/services/AuthService.java
+/Users/jorgedavidolmedo/Documents/crud_springBoot/src/main/java/jorge/crud/services/HeaderRequestInterceptor.java
+/Users/jorgedavidolmedo/Documents/crud_springBoot/src/main/java/jorge/crud/controllers/ApiController.java
+/Users/jorgedavidolmedo/Documents/crud_springBoot/src/main/java/jorge/crud/Configuracion.java
+/Users/jorgedavidolmedo/Documents/crud_springBoot/src/main/java/jorge/crud/controllers/CredencialesController.java
+/Users/jorgedavidolmedo/Documents/crud_springBoot/src/main/java/jorge/crud/repositories/UsuarioRepository.java
+/Users/jorgedavidolmedo/Documents/crud_springBoot/src/main/java/jorge/crud/DemoApplication.java
+/Users/jorgedavidolmedo/Documents/crud_springBoot/src/main/java/jorge/crud/services/AuthorizationService.java
+/Users/jorgedavidolmedo/Documents/crud_springBoot/src/main/java/jorge/crud/models/Usuario.java
+/Users/jorgedavidolmedo/Documents/crud_springBoot/src/main/java/jorge/crud/config/SecurityConfig.java

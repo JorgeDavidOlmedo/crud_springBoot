@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+    <head th:include="fragments/header :: header">
+    </head>
+    <body ng-app="usuarioApp">
+        <div th:replace="fragments/header :: menu(${usuario.nombre},${usuario.id})"></div>
+        <div ng-controller="controllerUsuario">
+        <!-- Header -->
+        
+        <div class="container">
+            <div class="col-md-12">
+               <button ng-click="crearUsuario()" class="btn btn-success crear">Crear Usuario</button>
+               <div class="form-group">
+                  
+                   <input type="text" class="form-control" ng-model="q" id="search" placeholder="Buscar..."></input>
+                  
+                  </div>
+                <table id="sample" class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Usuario</th>
+                            <th>CI</th>
+                            <th>Email</th>
+                            <th>Telefono</th>
+                            <th>Config</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                          <tr ng-repeat="l in usuarios | filter:q | startFrom:currentPage*pageSize | limitTo:pageSize" >
+                            <td>{{l.id}}</td>
+                            <td>{{l.nombre}}</td>
+                            <td>{{l.ci}}</td>
+                            <td>{{l.email}}</td>
+                            <td>{{l.telefono}}</td>
+                            
+                            <td class="actions">
+                                
+                                 <button class="btn btn-primary btn-xs actions" ng-click="editUsuario(l)"><span class="glyphicon glyphicon-pencil"></span></button>
+                                 <button class="btn btn-danger btn-xs actions" ng-click="deleteUsuario(l)"><span class="glyphicon glyphicon-trash"></span></button>
+                          
+                                 
+                            </td>
+                            </tr>
+                    </tbody>
+                   
+                </table>
+               
+                <div class="paginator">
+                <ul class="pagination">
+                    <button class="btn btn-default" ng-disabled="currentPage == 0" ng-click="currentPage=currentPage-1">
+                        Previous
+                    </button><strong>{{currentPage+1}}/{{numberOfPages()}}</strong>
+                    <button class="btn btn-default" ng-disabled="currentPage >= getData().length/pageSize - 1" ng-click="currentPage=currentPage+1">
+                        Next
+                    </button>
+                </ul>
+
+              </div>
+                
+            </div>
+            
+            
+            <!-- modal -->
+             <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModal" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="myModalLabel">Crear Usuario</h4>
+                        </div>
+                        <form>
+                            <div class="modal-body">
+                                <div class="">
+                                    <form method="POST">
+                                        <input type="hidden" name="id" />
+                                       <div class="form-group">
+                                            <label for="descripcion">Nombre</label>
+                                            <input class="form-control" type="text" required="true" name="nombre" ng-model="usuario.nombre" />
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <label for="descripcion">CI</label>
+                                            <input class="form-control" type="text" required="true" name="nombre" ng-model="usuario.ci" />
+                                        </div>
+                                        
+                                        <div class="form-group">
+                                            <label for="descripcion">Email</label>
+                                            <input class="form-control" type="email" required="true" name="email" ng-model="usuario.email" />
+                                        </div>
+                                        
+                                         <div class="form-group">
+                                            <label for="descripcion">Password</label>
+                                            <input class="form-control" type="password" required="true" name="password" ng-model="usuario.password"/>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="descripcion">Telefono</label>
+                                            <input class="form-control" type="text" required="true" name="telefono" ng-model="usuario.telefono"/>
+                                        </div>
+                                        
+                                         <div class="form-group">
+                                             <label for="descripcion">Direccion</label>
+                                            <input class="form-control" type="text" required="true" name="direccion" ng-model="usuario.direccion"/>
+                                        </div>
+                          
+                                        
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                                <button type="button" class="btn btn-primary" ng-click="guardarUsuario()">Guardar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+        </div>
+        <footer>
+            <div th:replace="fragments/footer :: footer"></div>
+        </footer>
+    </body>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+    <script th:inline="javascript">
+           /*<![CDATA[*/
+                               
+                                //angular.module('usuariosApp',[])
+                                var app = angular.module('usuarioApp', []);
+                                    app.filter('startFrom', function () {
+                                        return function (input, start) {
+                                            if (input) {
+                                                start = +start;
+                                                return input.slice(start);
+                                            }
+                                            return [];
+                                        }});
+                                        app.controller('controllerUsuario', ['$http', '$scope','$window','$filter','$timeout', function ($http, $scope,$window,$filter,$timeout) {
+                                                
+                                                
+                                                $scope.usuarios = []; 
+                                               
+                                                
+                                                $scope.getUsuarios=function(){
+                                                      $http.get("/admin/usuariosJson/")
+                                                                .then(function (data) {
+                                                                    $scope.usuarios=data.data;
+                                                                    console.log(data.data);
+
+                                                                }); 
+                                                    };
+                                                    
+                                                                                                   
+                                                $scope.crearUsuario=function(){
+                                                    $scope.editUser=0;
+                                                    $scope.usuario={
+                                                        "id":0,
+                                                        "nombre":"",
+                                                        "ci":"",
+                                                        "email":"",
+                                                        "password":"",
+                                                        "telefono":"",
+                                                        "direccion":""
+                                                       
+                                                         }
+                                                    angular.element("#myModal").modal();
+                                                    console.log($scope.usuario);
+                                                 
+                                                };
+                                                
+                                                $scope.guardarUsuario=function(){
+                                  
+                                                    if($scope.verificarCampos()){
+                                                        
+                                                    console.log($scope.usuario);
+                                                    $scope.usuario.rol = $('#rol').val();
+                                                    $scope.usuario.estadoLogin=$('#status').val(); 
+                                                    
+                                                    $http.post('/admin/usuario/j',$scope.usuario)
+                                                            .then(function(data){
+                                                                angular.element("#myModal").modal('hide');
+                                                                $window.location.reload();
+                                                               
+                                                            },function(){
+                                                                angular.element("#myModal").modal('hide');
+                                                               
+                                                            });
+                                                        
+                                                    }
+                                                    
+                                                }
+                                                
+                                                $scope.verificarCampos = function(){
+                                                     console.log($scope.usuario);
+                                                                                                        
+                                                    if($scope.usuario.nombre == "" || $scope.usuario.nombre == null){
+                                                        swal("Atencion!", "Debes Ingresar el nombre del usuario.", "error");
+                                                        return false;
+                                                    }
+                                                    
+                                                    if($scope.usuario.ci == "" || $scope.usuario.ci == null){
+                                                        swal("Atencion!", "Debes Ingresar el Nro. de Cedula.", "error");
+                                                        return false;
+                                                    }
+                                                    
+                                                    if($scope.usuario.email == "" || $scope.usuario.email == null){
+                                                        swal("Atencion!", "Debes Ingresar el Email.", "error");
+                                                        return false;
+                                                    }
+                                                    
+                                                    if($scope.editUser==0){
+                                                        if($scope.usuario.password == "" || $scope.usuario.password == null){
+                                                        swal("Atencion!", "Debes Ingresar el password.", "error");
+                                                        return false;
+                                                    }
+                                                    }
+                                                    
+                                                    
+                                                    if($scope.usuario.telefono == "" || $scope.usuario.telefono == null){
+                                                        swal("Atencion!", "Debes Ingresar el Nro. de Telefono.", "error");
+                                                        return false;
+                                                    }
+                                                    
+                                                    if($scope.usuario.direccion == "" || $scope.usuario.direccion == null){
+                                                        swal("Atencion!", "Debes Ingresar la Direccion.", "error");
+                                                        return false;
+                                                    }
+                                                    
+                                                    
+                                                    
+                                                    return true;
+                                                }
+                                                
+                                                 $scope.EliminarUsuario = function(usu){
+                                                    $scope.usuario = usu;
+                                                    console.log($scope.usuario);
+                                                    $http.post('/admin/usuarios/eliminar/j',$scope.usuario)
+                                                       .then(function(data){
+                                                                
+                                                        if(data.data.estado == 0){
+                                                                 swal("Eliminado!", "El registro se elimino correctamente.", "success");
+                                                                 $timeout(function () {
+                                                                    $scope.loadUsuario();
+                                                                }, 1000);
+                                                        }        
+                                                             },function(){
+                                                                angular.element("#myModal").modal('hide');
+                                                               
+                                                            });
+                                                }
+                                                
+                                                 $scope.deleteUsuario=function(tipo){
+                                                    console.log(tipo);
+                                                    swal({
+                                                        title: "Deseas eliminar el registro?",
+                                                        text: "Atencion. al eliminar el registro ya no podras recuperarlo!",
+                                                        type: "warning",
+                                                        showCancelButton: true,
+                                                        confirmButtonColor: "#DD6B55",
+                                                        confirmButtonText: "Si, eliminar!",
+                                                        closeOnConfirm: true
+                                                    }, function () {
+                                                        $scope.EliminarUsuario(tipo);
+                                                        
+                                                    });
+                                                };
+                                                $scope.loadUsuario = function(){
+                                                    $window.location.reload();
+                                                }
+                                                $scope.editUser=0;
+                                                $scope.editUsuario=function(usuario){
+                                                    console.log(usuario);
+                                                    $scope.editUser=1;
+                                                    $scope.usuario = usuario
+                                                    $("#rol").val(usuario.rol);
+                                                    $("#status").val(usuario.estadoLogin);
+                                                    angular.element("#myModal").modal();
+                                                };
+                                                
+                                                $scope.deleteTipo=function(tipo){
+                                                    console.log(tipo);
+                                                    swal({
+                                                        title: "Deseas eliminar el registro?",
+                                                        text: "Atencion. al eliminar el registro ya no podras recuperarlo!",
+                                                        type: "warning",
+                                                        showCancelButton: true,
+                                                        confirmButtonColor: "#DD6B55",
+                                                        confirmButtonText: "Si, eliminar!",
+                                                        closeOnConfirm: false
+                                                    }, function () {
+                                                        swal("Eliminado!", "El registro se elimino correctamente.", "success");
+                                                    });
+                                                };
+                                                
+                                                $scope.cerrar = function(){
+                                                    angular.element("#myModal").modal('hide');
+                                                    $window.location.reload();
+                                                }
+                                                
+                                                $scope.getUsuarios();
+                      
+                                            $scope.currentPage = 0;
+                                            $scope.pageSize = 10;
+                                            $scope.data = [];
+                                            $scope.q = '';
+
+                                            $scope.getData = function () {
+                                              return $filter('filter')($scope.usuarios, $scope.q)
+
+                                            }
+
+                                            $scope.numberOfPages=function(){
+                                                var numero = 1;
+                                                numero = Math.ceil($scope.getData().length/$scope.pageSize);
+                                                if(numero==0){
+                                                    numero=1;
+                                                }else{
+                                                    numero = Math.ceil($scope.getData().length/$scope.pageSize);
+                                                }
+                                                return numero;
+                                            }
+
+                                            $scope.$watch('q', function(newValue,oldValue){
+                                                if(oldValue!=newValue){
+                                                $scope.currentPage = 0;
+
+                                            }
+                                            },true);
+                                        /**********************************************************/
+                                                
+                                            }]);
+             /*]]>*/
+                                      
+    </script>
+</html>
+
+<style>
+    .crear{
+        margin-bottom: 10px;
+    }
+    
+    .paginator{
+        margin-top: -30px;
+    }
+</style>

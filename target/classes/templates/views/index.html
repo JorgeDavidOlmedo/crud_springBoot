@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+    <head th:include="fragments/header :: header">
+    </head>
+    <body>
+        <div th:replace="fragments/header :: menu(${usuario.nombre},${usuario.id})"></div>
+        <!-- Header -->
+        
+        <footer>
+            <div th:replace="fragments/footer :: footer"></div>
+        </footer>
+    </body>
+</html>

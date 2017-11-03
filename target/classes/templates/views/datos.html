@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+    <head th:include="fragments/header :: header">
+    </head>
+    <body ng-app="tipoApp">
+        <div th:replace="fragments/header :: menu(${usuario.nombre},${usuario.id})"></div>
+        <div ng-controller="controllerTipo">
+        <!-- Header -->
+      <div class="container">
+      <div class="col-md-8">  
+       <div class="form-group row">
+        <label for="example-text-input" class="col-2 col-form-label">Nombre</label>
+        <div class="col-10">
+            <input class="form-control" type="text" name="nombre" id="nombre" th:value="${usuario.nombre}"></input>
+        </div>
+      </div>
+          
+       <div class="form-group row">
+        <label for="example-text-input" class="col-2 col-form-label">Email</label>
+        <div class="col-10">
+            <input class="form-control" type="text" name="email" id="email" th:value="${usuario.email}"></input>
+        </div>
+       </div>
+          
+        <div class="form-group row">
+        <label for="example-text-input" class="col-2 col-form-label">Telefono</label>
+        <div class="col-10">
+            <input class="form-control" type="text" name="telefono" id="telefono" th:value="${usuario.telefono}"></input>
+        </div>
+       </div>
+          
+        <div class="form-group row">
+        <label for="example-text-input" class="col-2 col-form-label">Direccion</label>
+        <div class="col-10">
+            <input class="form-control" type="text" name="direccion" id="direccion" th:value="${usuario.direccion}"></input>
+        </div>
+       </div>
+          
+       <div class="form-group row">
+        <label for="example-text-input" class="col-2 col-form-label">Rol</label>
+        <div class="col-10">
+            <input class="form-control" type="text" name="rol" id="rol" th:value="${usuario.rol}"></input>
+        </div>
+       </div>
+    
+        </div>
+          </div>
+        </div>
+        <footer>
+            <div th:replace="fragments/footer :: footer"></div>
+        </footer>
+    </body>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+    <script th:inline="javascript">
+           /*<![CDATA[*/
+                                //angular.module('usuariosApp',[])
+                                var app = angular.module('tipoApp', []);
+                                    app.filter('startFrom', function () {
+                                        return function (input, start) {
+                                            if (input) {
+                                                start = +start;
+                                                return input.slice(start);
+                                            }
+                                            return [];
+                                        }});
+                                        app.controller('controllerTipo', ['$http', '$scope','$window','$filter','$timeout', function ($http, $scope,$window,$filter,$timeout) {
+                                                document.getElementById("nombre").readOnly = true;
+                                                document.getElementById("email").readOnly = true;
+                                                document.getElementById("telefono").readOnly = true;
+                                                document.getElementById("direccion").readOnly = true;
+                                                document.getElementById("rol").readOnly = true;
+                                                $scope.tipos = []; 
+                                                $scope.getTipos=function(){
+                                                      $http.get("/admin/tiposJson/")
+                                                                .then(function (data) {
+                                                                    $scope.tipos=data.data;
+                                                                    console.log(data.data);
+
+                                                                }); 
+                                                    };
+                                               
+                                               
+                                                $scope.getTipos();
+                                                
+                                            }]);
+             /*]]>*/
+                                      
+    </script>
+</html>
+
+<style>
+    .crear{
+        margin-bottom: 10px;
+    }
+    
+    .paginator{
+        margin-top: -30px;
+    }
+</style>
